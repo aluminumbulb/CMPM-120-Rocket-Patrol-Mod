@@ -22,7 +22,9 @@ class Play extends Phaser.Scene{
             this,
             game.config.width/2,
             game.config.height - borderUISize - borderPadding,
-            'rocket'
+            'rocket',
+            0,
+            1,
         ).setOrigin(0.5,0);
 
         this.ship1 = new Ships(
@@ -47,8 +49,11 @@ class Play extends Phaser.Scene{
         ).setOrigin(0,0);
 
 
-        keyF = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F);
+        p1FIRE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
         keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
+        keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
+        keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
+        p2FIRE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
         keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
 
@@ -92,7 +97,7 @@ class Play extends Phaser.Scene{
     }
 
     update(){
-if(this.gameOver && Phaser.Input.Keyboard.JustDown(keyF)){
+if(this.gameOver && Phaser.Input.Keyboard.JustDown(keyR)){
     this.scene.restart();
 }
 if (this.gameOver && Phaser.Input.Keyboard.JustDown(keyLEFT)) {
