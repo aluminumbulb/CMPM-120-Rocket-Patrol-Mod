@@ -24,7 +24,7 @@ class Play extends Phaser.Scene {
             game.config.height - borderUISize - borderPadding,
             'rocket',
             0,
-            1,
+            true,
         ).setOrigin(0.5, 0);
 
         this.p2Rocket = new Rocket(
@@ -33,7 +33,7 @@ class Play extends Phaser.Scene {
             game.config.height - borderUISize - borderPadding,
             'rocket',
             0,
-            2,
+            false,
         ).setOrigin(0.5, 0);
 
 
@@ -118,6 +118,7 @@ class Play extends Phaser.Scene {
         this.starfield.tilePositionX -= 4;
         if (!this.gameOver) {
             this.p1Rocket.update();
+            this.p2Rocket.update();
             this.ship1.update();
             this.ship2.update();
             this.ship3.update();
@@ -135,7 +136,6 @@ class Play extends Phaser.Scene {
             rocket.reset();
             this.shipExplode(ship);
         }
-
     }
 
     shipExplode(ship) {
@@ -153,4 +153,8 @@ class Play extends Phaser.Scene {
         this.p1Score += ship.points;
         this.scoreLeft.text = this.p1Score;
     }
+
+    //checkCollision(rocket1, rocket2){
+
+    //}
 }
