@@ -7,13 +7,10 @@ class Menu extends Phaser.Scene{
         this.load.audio('sfx_select', '/assets/blip_select12.wav');
         this.load.audio('sfx_explosion', 'assets/explosion38.wav');
         this.load.audio('sfx_rocket', 'assets/rocket_shot.wav');
+        this.load.image('rocket', 'assets/rocket.png');
     }
 
     create(){
-        //at location 20x, 20y
-        //this.add.text(20,20,"Rocket Patrol Menu");
-        //this.scene.start("playScene");
-
         let menuConfig = {
             fontFamily: 'Courier',
             fontSize: '28px',
@@ -27,6 +24,8 @@ class Menu extends Phaser.Scene{
             fixedWidth: 0
         }
 
+        
+
         this.add.text(game.config.width/2, game.config.height/2 - borderUISize -
         borderPadding, 'ROCKET PATROL', menuConfig).setOrigin(0.5);
         this.add.text(game.config.width/2, game.config.height/2, 'Use ← → arrows to move & (F) to fire',
@@ -35,15 +34,27 @@ class Menu extends Phaser.Scene{
         menuConfig.color = '#000';
         this.add.text(game.config.width/2, game.config.height/2 + borderUISize +
         borderPadding, 'Press ← for Novice or → for Expert', menuConfig).setOrigin(.5);
-        menuConfig.backgroundColor = '#00FF00';
+        menuConfig.backgroundColor = '#3F9EFC';
         menuConfig.color = '#000';
+        
         this.add.text(game.config.width/2, game.config.height/2+100 + borderUISize +
-        borderPadding, '↓', menuConfig).setOrigin(.5);
+        borderPadding, '↓   ', menuConfig).setOrigin(.5);
 
         // define keys
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
         keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
         this.keyDown =  this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
+
+        this.player1 = this.add.sprite((game.config.width/2)+0, game.config.height/2+100 + borderUISize +
+        borderPadding, 'rocket')
+
+        this.player2 = this.add.sprite((game.config.width/2)+20, game.config.height/2+100 + borderUISize +
+        borderPadding, 'rocket')
+
+        this.player2.alpha = 0;
+
+        this.players = false;
+
     }
 
     update(){
@@ -52,7 +63,8 @@ class Menu extends Phaser.Scene{
             // easy mode
             game.settings = {
               spaceshipSpeed: 3,
-              gameTimer: 60000    
+              gameTimer: 60000,
+              players: this.players    
             }
             this.sound.play('sfx_select');
             this.scene.start('playScene');    
@@ -61,12 +73,24 @@ class Menu extends Phaser.Scene{
             // hard mode
             game.settings = {
               spaceshipSpeed: 4,
-              gameTimer: 45000    
+              gameTimer: 45000,
+              players: this.players      
             }
             this.sound.play('sfx_select');
             this.scene.start('playScene');    
           }
+          if(Phaser.Input.Keyboard.JustDown(this.keyDown)){
+            this.togglePlayers();
+          }
     }
 
-    
+    togglePlayers(){
+      this.players = !this.players;
+      if(this.players){
+        this.player2.alpha = 1;
+      }else{
+        this.player2.alpha = 0;
+      }
+    }
+  
 }

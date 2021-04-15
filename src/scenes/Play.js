@@ -20,22 +20,23 @@ class Play extends Phaser.Scene {
 
         this.p1Rocket = new Rocket(
             this,
-            game.config.width / 2,
+            (game.settings.players? ((game.config.width / 2)-100) : (game.config.width / 2)),
             game.config.height - borderUISize - borderPadding,
             'rocket',
             0,
             true,
         ).setOrigin(0.5, 0);
 
+        if(game.settings.players){
         this.p2Rocket = new Rocket(
             this,
-            game.config.width / 2,
+            (game.config.width / 2) + 100,
             game.config.height - borderUISize - borderPadding,
             'rocket',
             0,
             false,
         ).setOrigin(0.5, 0);
-
+        }
 
         this.ship1 = new Ships(
             this,
@@ -44,12 +45,15 @@ class Play extends Phaser.Scene {
             'ship'
         ).setOrigin(0, 0);
 
-        this.ship2 = new Ships(
-            this,
-            300,
-            240,
-            'ship'
-        ).setOrigin(0, 0);
+        //Only make the second if the player requested two players
+        
+            this.ship2 = new Ships(
+                this,
+                300,
+                240,
+                'ship'
+            ).setOrigin(0, 0);
+ 
 
         this.ship3 = new Ships(
             this,
@@ -118,7 +122,9 @@ class Play extends Phaser.Scene {
         this.starfield.tilePositionX -= 4;
         if (!this.gameOver) {
             this.p1Rocket.update();
-            this.p2Rocket.update();
+            if(game.settings.players){
+                this.p2Rocket.update();
+            }
             this.ship1.update();
             this.ship2.update();
             this.ship3.update();
@@ -154,7 +160,7 @@ class Play extends Phaser.Scene {
         this.scoreLeft.text = this.p1Score;
     }
 
-    //checkCollision(rocket1, rocket2){
-
-    //}
+    checkCollision(rocket1, rocket2){
+        
+    }
 }
