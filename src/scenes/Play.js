@@ -124,6 +124,7 @@ class Play extends Phaser.Scene {
             this.p1Rocket.update();
             if(game.settings.players){
                 this.p2Rocket.update();
+                this.setMultiplayerBorders(this.p1Rocket, this.p2Rocket);
             }
             this.ship1.update();
             this.ship2.update();
@@ -160,7 +161,10 @@ class Play extends Phaser.Scene {
         this.scoreLeft.text = this.p1Score;
     }
 
-    checkCollision(rocket1, rocket2){
-        
+    setMultiplayerBorders(rocket1, rocket2){
+        console.log("Rocket 1: " +rocket1.x + " Rocket 2:"+rocket2.x);
+        //yeah...I gave player one the edge
+        rocket2.x = (Phaser.Math.Clamp(rocket2.x, rocket1.x + rocket1.width, game.config.width - borderUISize - borderPadding));
+        rocket1.x = (Phaser.Math.Clamp(rocket1.x, borderUISize + borderPadding, rocket2.x-rocket2.width));
     }
 }
