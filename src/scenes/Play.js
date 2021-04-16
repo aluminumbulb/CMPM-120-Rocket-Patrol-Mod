@@ -9,10 +9,11 @@ class Play extends Phaser.Scene {
         this.load.image('rocket', 'assets/rocket.png');
         this.load.image('ship', 'assets/spaceship.png');
         this.load.spritesheet('explosion', 'assets/explosion.png', { frameWidth: 64, frameHeight: 32, startFrame: 0, endFrame: 9 });
-
+        this.load.image('fragment', 'assets/ship fragment resized.png')
     }
 
     create() {
+
         //layers are important
         this.starfield = this.add.tileSprite(
             0, 0, 640, 480, 'starfield'
@@ -109,6 +110,19 @@ class Play extends Phaser.Scene {
             this.add.text(game.config.width / 2, game.config.height / 2 + 64, '(F)ire to Restart or <- for Menu', scoreConfig).setOrigin(0.5);
             this.gameOver = true;
         }, null, this);
+
+        //Particle Emitter
+        this.emitter = this.add.particles('fragment').createEmitter({
+            x: 0,
+            y: 0,
+            speed: { min: -800, max: 800 },
+            angle: { min: 0, max: 360 },
+            scale: { start: 0.5, end: 0 },
+            blendMode: 'SCREEN',
+            active: false,
+            lifespan: 600,
+            gravityY: 800
+        })
     }
 
     update() {
@@ -149,14 +163,17 @@ class Play extends Phaser.Scene {
         console.log("explode called");
         ship.alpha = 0;
         this.sound.play('sfx_explosion');
-        let boom = this.add.sprite(ship.x, ship.y, 'explosion').setOrigin(0, 0);
-        console.log(boom);
-        boom.anims.play('explode');//plays animation
-        boom.on('animationcomplete', () => {
+        this.emitter.setPosition(ship.x, ship.y) ;
+        this.emitter.active = true;
+        this.emitter.explode();
+        //let boom = this.add.sprite(ship.x, ship.y, 'explosion').setOrigin(0, 0);
+        //boom.anims.play('explode');//plays animation
+        //boom.on('animationcomplete', () => {
             ship.reset()
             ship.alpha = 1;//make ship visible
-            boom.destroy();//removes sprite
-        })
+            //boom.destroy();//removes sprite
+            //emitter.destroy();
+        //})
         this.p1Score += ship.points;
         this.scoreLeft.text = this.p1Score;
     }
