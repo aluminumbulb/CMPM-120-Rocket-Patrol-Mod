@@ -9,7 +9,7 @@ class Play extends Phaser.Scene {
         this.load.image('rocket', 'assets/rocket.png');
         this.load.image('ship', 'assets/spaceship.png');
         this.load.spritesheet('explosion', 'assets/explosion.png', { frameWidth: 64, frameHeight: 32, startFrame: 0, endFrame: 9 });
-        this.load.image('fragment', 'assets/ship fragment resized.png')
+        this.load.image('bonus', 'assets/bonus_time_sized.png');
     }
 
     create() {
@@ -112,17 +112,57 @@ class Play extends Phaser.Scene {
         }, null, this);
 
         //Particle Emitter
-        this.emitter = this.add.particles('fragment').createEmitter({
+        this.emitter = this.add.particles('bonus').createEmitter({
             x: 0,
             y: 0,
-            speed: { min: -800, max: 800 },
+            speed: { min: -100, max: 100 },
             angle: { min: 0, max: 360 },
-            scale: { start: 0.5, end: 0 },
+            scale: { start: 2, end: 1 },
             blendMode: 'SCREEN',
             active: false,
-            lifespan: 600,
-            gravityY: 800
+            lifespan: 300,
+            gravityY: 0
         })
+
+        //Implementing Timer
+
+        this.timeCount = (game.settings.gameTimer/1000); 
+
+        let timerConfig = {
+            fontFamily: 'Courier',
+            fontSize: '28px',
+            backgroundColor: '#F3B141',
+            color: '#843605',
+            align: 'left',
+            padding: {
+                top: 5,
+                bottom: 5,
+            },
+            fixedWidth: 100
+
+        }
+
+        this.timerRight = this.add.text(game.config.width-borderUISize-borderPadding-100, borderUISize + borderPadding * 2, this.timeCount, timerConfig);
+        this.countdown = this.time.addEvent({
+            delay: 1000,
+            callback: () => {
+                
+                if(this.timeCount > 0){
+                    this.timeCount--;
+                    this.timerRight.text = this.timeCount;
+                }
+            },
+            loop: true,
+        });
+
+        //Half Time Speed Boost
+        this.time.addEvent({
+            delay: (game.settings.gameTimer/2),
+            callback: ()=>{
+                game.settings.spaceshipSpeed *=2;
+            },
+        })
+        
     }
 
     update() {
@@ -133,7 +173,7 @@ class Play extends Phaser.Scene {
             this.scene.start("menuScene");
         }
 
-        this.starfield.tilePositionX -= 4;
+
         if (!this.gameOver) {
             this.p1Rocket.update();
             if(game.settings.players){
@@ -143,7 +183,9 @@ class Play extends Phaser.Scene {
             this.ship1.update();
             this.ship2.update();
             this.ship3.update();
+            this.starfield.tilePositionX -= 4;
         }
+
         this.checkCollision(this.p1Rocket, this.ship1);
         this.checkCollision(this.p1Rocket, this.ship2);
         this.checkCollision(this.p1Rocket, this.ship3);
@@ -160,20 +202,22 @@ class Play extends Phaser.Scene {
     }
 
     shipExplode(ship) {
-        console.log("explode called");
+        //TIMER ADD HERE
+        this.timeCount += 5;
+
         ship.alpha = 0;
         this.sound.play('sfx_explosion');
-        this.emitter.setPosition(ship.x, ship.y) ;
+        this.emitter.setPosition(ship.x, ship.y);
         this.emitter.active = true;
         this.emitter.explode();
-        //let boom = this.add.sprite(ship.x, ship.y, 'explosion').setOrigin(0, 0);
-        //boom.anims.play('explode');//plays animation
-        //boom.on('animationcomplete', () => {
+        let boom = this.add.sprite(ship.x, ship.y, 'explosion').setOrigin(0, 0);
+        boom.anims.play('explode');//plays animation
+        boom.on('animationcomplete', () => {
             ship.reset()
             ship.alpha = 1;//make ship visible
-            //boom.destroy();//removes sprite
-            //emitter.destroy();
-        //})
+            boom.destroy();//removes sprite
+            this.emitter.active = false;
+        })
         this.p1Score += ship.points;
         this.scoreLeft.text = this.p1Score;
     }

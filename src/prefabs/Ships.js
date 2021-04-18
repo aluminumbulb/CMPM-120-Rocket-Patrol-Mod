@@ -3,17 +3,42 @@ class Ships extends Phaser.GameObjects.Sprite{
         super(scene, x, y, texture, frame);
         scene.add.existing(this);
         this.points = 25
+        this.rtl = true;
+        this.speed;
+        this.determineSide()
     }
 
     update(){
-        this.x -= game.settings.spaceshipSpeed;
-        if(this.x< -this.width){
-            this.x = game.config.width;
+        this.x += this.speed;
+        if(this.x<0-50 || this.x>game.config.width+50){
+            this.reset();
         }
     }
 
     reset(){
-        this.x = game.config.width + 50;
+        this.determineSide()
+        if(this.rtl){
+            this.x = game.config.width + 50;
+        }else{
+            this.x = -50;
+        }
+        this.y = Phaser.Math.Between(borderUISize + borderPadding+50, game.config.height - borderUISize - borderPadding - 50)
         this.alpha = 1;
+    }
+
+    determineSide(){
+        if(Phaser.Math.Between(0,1) == 0){
+            if(!this.rtl){
+                this.scaleX = 1
+            }
+            this.rtl = true;
+            this.speed = -game.settings.spaceshipSpeed;
+        }else{
+            if(this.rtl){
+                this.scaleX = -1
+            }
+            this.rtl = false;
+            this.speed = game.settings.spaceshipSpeed;
+        }
     }
 }
