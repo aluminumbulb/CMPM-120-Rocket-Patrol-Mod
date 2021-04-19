@@ -98,7 +98,7 @@ class Play extends Phaser.Scene {
         });
 
         this.p1Score = 0;
-        let scoreConfig = {
+        this.scoreConfig = {
             fontFamily: 'Courier',
             fontSize: '28px',
             backgroundColor: '#F3B141',
@@ -110,14 +110,10 @@ class Play extends Phaser.Scene {
             },
             fixedWidth: 100
         }
-        this.scoreLeft = this.add.text(borderUISize + borderPadding, borderUISize + borderPadding * 2, this.p1Score, scoreConfig);
+        this.scoreLeft = this.add.text(borderUISize + borderPadding, borderUISize + borderPadding * 2, this.p1Score, this.scoreConfig);
 
-        scoreConfig.fixedWidth = 0;
+        this.scoreConfig.fixedWidth = 0;
         this.gameOver = false;
-
-        //this.clock = this.time.delayedCall(game.settings.gameTimer, () => {
-
-       // }, null, this);
 
         //Particle Emitter
         this.emitter = this.add.particles('bonus').createEmitter({
@@ -174,8 +170,8 @@ class Play extends Phaser.Scene {
 
     update() {
         if(this.timeCount<=0){
-            this.add.text(game.config.width / 2, game.config.height / 2, 'GAME OVER', scoreConfig).setOrigin(0.5);
-            this.add.text(game.config.width / 2, game.config.height / 2 + 64, '(F)ire to Restart or <- for Menu', scoreConfig).setOrigin(0.5);
+            this.add.text(game.config.width / 2, game.config.height / 2, 'GAME OVER', this.scoreConfig).setOrigin(0.5);
+            this.add.text(game.config.width / 2, game.config.height / 2 + 64, '(R)estart or ← for Menu', this.scoreConfig).setOrigin(0.5);
             this.gameOver = true;
         }
 
@@ -183,7 +179,7 @@ class Play extends Phaser.Scene {
         if (this.gameOver && Phaser.Input.Keyboard.JustDown(keyR)) {
             this.scene.restart();
         }
-        
+
         if (this.gameOver && Phaser.Input.Keyboard.JustDown(keyLEFT)) {
             this.scene.start("menuScene");
         }
