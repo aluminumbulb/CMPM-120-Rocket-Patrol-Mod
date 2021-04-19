@@ -66,7 +66,7 @@ class Play extends Phaser.Scene {
         this.fastShip = new fShip(
             this,
             Phaser.Math.Between(100,300),
-            50,
+            43,
             'fship'
         ).setOrigin(0,0);
 
@@ -115,11 +115,9 @@ class Play extends Phaser.Scene {
         scoreConfig.fixedWidth = 0;
         this.gameOver = false;
 
-        this.clock = this.time.delayedCall(game.settings.gameTimer, () => {
-            this.add.text(game.config.width / 2, game.config.height / 2, 'GAME OVER', scoreConfig).setOrigin(0.5);
-            this.add.text(game.config.width / 2, game.config.height / 2 + 64, '(F)ire to Restart or <- for Menu', scoreConfig).setOrigin(0.5);
-            this.gameOver = true;
-        }, null, this);
+        //this.clock = this.time.delayedCall(game.settings.gameTimer, () => {
+
+       // }, null, this);
 
         //Particle Emitter
         this.emitter = this.add.particles('bonus').createEmitter({
@@ -170,14 +168,22 @@ class Play extends Phaser.Scene {
             callback: ()=>{
                 game.settings.spaceshipSpeed *=2;
             },
+            loop:true,
         })
     }
 
     update() {
+        if(this.timeCount<=0){
+            this.add.text(game.config.width / 2, game.config.height / 2, 'GAME OVER', scoreConfig).setOrigin(0.5);
+            this.add.text(game.config.width / 2, game.config.height / 2 + 64, '(F)ire to Restart or <- for Menu', scoreConfig).setOrigin(0.5);
+            this.gameOver = true;
+        }
+
         //Changed key to R to (R)estart
         if (this.gameOver && Phaser.Input.Keyboard.JustDown(keyR)) {
             this.scene.restart();
         }
+        
         if (this.gameOver && Phaser.Input.Keyboard.JustDown(keyLEFT)) {
             this.scene.start("menuScene");
         }
@@ -244,8 +250,7 @@ class Play extends Phaser.Scene {
             3000, 
             this.turnOffEmitter,
             undefined, 
-            this); 
-        
+            this);    
     }
 
     turnOffEmitter(){

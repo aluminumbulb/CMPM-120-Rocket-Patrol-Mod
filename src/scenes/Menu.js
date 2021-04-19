@@ -24,8 +24,6 @@ class Menu extends Phaser.Scene{
             fixedWidth: 0
         }
 
-        
-
         this.add.text(game.config.width/2, game.config.height/2 - borderUISize -
         borderPadding, 'ROCKET PATROL', menuConfig).setOrigin(0.5);
         this.add.text(game.config.width/2, game.config.height/2, 'P1: Use (A) and (D) Keys to move & (W) to fire',
@@ -62,7 +60,6 @@ class Menu extends Phaser.Scene{
     }
 
     update(){
-        
         if (Phaser.Input.Keyboard.JustDown(keyLEFT)) {
             // easy mode
             game.settings = {

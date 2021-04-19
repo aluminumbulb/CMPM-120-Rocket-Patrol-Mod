@@ -30,7 +30,7 @@ class fShip extends Phaser.GameObjects.Sprite{
 
         this.setPosition(
             Phaser.Math.Between(borderUISize + borderPadding, game.config.width),
-            this.y = 50
+            this.y = 43
         )
         this.initialX = this.x;
     }

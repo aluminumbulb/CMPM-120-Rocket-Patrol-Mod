@@ -44,4 +44,9 @@ Randomize each spaceship's movement direction at the start of each play (5)
     - Ships randomize right to left or left to right every reset
     - Flipped ships sprites
     - Entry point on the screen randomized on y axis
+
+Known Bu- Features:
+    - It is impossible to lose this game, at a certain point ships move so quickly odds are higher that 
+    the ship collides with something rather than it leaving the screen. 
+    - You can find the tiny ship's hiding place behind the green bar. 
 */
