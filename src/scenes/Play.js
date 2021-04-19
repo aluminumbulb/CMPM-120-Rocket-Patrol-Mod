@@ -11,10 +11,12 @@ class Play extends Phaser.Scene {
         this.load.spritesheet('explosion', 'assets/explosion.png', { frameWidth: 64, frameHeight: 32, startFrame: 0, endFrame: 9 });
         this.load.image('bonus', 'assets/bonus_time_sized.png');//bonus time sprite for emitter
         this.load.image('fship', 'assets/quick_ship.png');//faster ship
-
     }
 
     create() {
+        //For resetting ships speed later
+        this.startSpeed = game.settings.spaceshipSpeed;
+
         this.starfield = this.add.tileSprite(
             0, 0, 640, 480, 'starfield'
         ).setOrigin(0, 0);
@@ -177,6 +179,7 @@ class Play extends Phaser.Scene {
 
         //Changed key to R to (R)estart
         if (this.gameOver && Phaser.Input.Keyboard.JustDown(keyR)) {
+            game.settings.spaceshipSpeed = this.startSpeed;
             this.scene.restart();
         }
 
