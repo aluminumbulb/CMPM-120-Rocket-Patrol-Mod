@@ -25,7 +25,6 @@ class fShip extends Phaser.GameObjects.Sprite{
     }
 
     reset(){
-        console.log("Kill me");
         this.dropping = false;
 
         this.setPosition(
