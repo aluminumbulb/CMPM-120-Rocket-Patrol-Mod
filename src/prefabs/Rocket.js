@@ -3,7 +3,7 @@ class Rocket extends Phaser.GameObjects.Sprite {
     constructor(scene, x, y, texture, frame, player) {
         super(scene, x, y, texture, frame, player)
         scene.add.existing(this);
-        this.movementSpeed = 2;
+        this.movementSpeed = 3;//give the rocket some oomph
         this.isFiring = false;
         this.sfxRocket = scene.sound.add('sfx_rocket');
         this.p1 = player;
@@ -16,6 +16,8 @@ class Rocket extends Phaser.GameObjects.Sprite {
                 this.reset();
             }
         } else {
+            //This is my method to update succinctly, if the rocket is
+            //player one, it responds to one key, or responds to the other if not
             if (this.p1 ? keyA.isDown : keyLEFT.isDown) {
                 this.x -= this.movementSpeed;
             }

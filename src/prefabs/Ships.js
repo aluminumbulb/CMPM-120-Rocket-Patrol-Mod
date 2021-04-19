@@ -8,8 +8,10 @@ class Ships extends Phaser.GameObjects.Sprite{
         this.determineSide()
     }
 
+
     update(){
         this.x += this.speed;
+        //changed parameters to be either side of the game board
         if(this.x<0-50 || this.x>game.config.width+50){
             this.reset();
         }
@@ -27,6 +29,7 @@ class Ships extends Phaser.GameObjects.Sprite{
     }
 
     determineSide(){
+        //flips a coin to determine which side and direction the rockets will start from
         if(Phaser.Math.Between(0,1) == 0){
             if(!this.rtl){
                 this.scaleX = 1

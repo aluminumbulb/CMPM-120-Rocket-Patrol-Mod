@@ -9,9 +9,12 @@ class fShip extends Phaser.GameObjects.Sprite{
     }
 
     update(){
-        if(Phaser.Math.Between(0,100)==0){
+        //selects a random time to drop the ship (might acutally never drop)
+        if(Phaser.Math.Between(0,1000)==0){
             this.dropping = true;
         }
+
+        //drops to bottom of screen
         if(this.dropping){
             this.y += this.speed;
             this.x = this.initialX+Math.sin(this.y/10)*30;
@@ -30,6 +33,5 @@ class fShip extends Phaser.GameObjects.Sprite{
             this.y = 50
         )
         this.initialX = this.x;
-        
     }
 }

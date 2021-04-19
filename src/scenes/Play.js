@@ -9,20 +9,19 @@ class Play extends Phaser.Scene {
         this.load.image('rocket', 'assets/rocket.png');
         this.load.image('ship', 'assets/spaceship.png');
         this.load.spritesheet('explosion', 'assets/explosion.png', { frameWidth: 64, frameHeight: 32, startFrame: 0, endFrame: 9 });
-        this.load.image('bonus', 'assets/bonus_time_sized.png');
-        this.load.image('fship', 'assets/quick_ship.png');
+        this.load.image('bonus', 'assets/bonus_time_sized.png');//bonus time sprite for emitter
+        this.load.image('fship', 'assets/quick_ship.png');//faster ship
 
     }
 
     create() {
-
-        //layers are important
         this.starfield = this.add.tileSprite(
             0, 0, 640, 480, 'starfield'
         ).setOrigin(0, 0);
 
         this.p1Rocket = new Rocket(
             this,
+            //If 2 players selected, p1 is put slightly offset, otherwise it's put in the middle
             (game.settings.players? ((game.config.width / 2)-100) : (game.config.width / 2)),
             game.config.height - borderUISize - borderPadding,
             'rocket',
@@ -30,15 +29,16 @@ class Play extends Phaser.Scene {
             true,
         ).setOrigin(0.5, 0);
 
+        //If 2 players was selected, a new rocket object is created
         if(game.settings.players){
-        this.p2Rocket = new Rocket(
-            this,
-            (game.config.width / 2) + 100,
-            game.config.height - borderUISize - borderPadding,
-            'rocket',
-            0,
-            false,
-        ).setOrigin(0.5, 0);
+            this.p2Rocket = new Rocket(
+                this,
+                (game.config.width / 2) + 100,
+                game.config.height - borderUISize - borderPadding,
+                'rocket',
+                0,
+                false,
+            ).setOrigin(0.5, 0);
         }
 
         this.ship1 = new Ships(
@@ -48,15 +48,12 @@ class Play extends Phaser.Scene {
             'ship'
         ).setOrigin(0, 0);
 
-        //Only make the second if the player requested two players
-        
         this.ship2 = new Ships(
             this,
              300,
             240,
              'ship'
         ).setOrigin(0, 0);
- 
 
         this.ship3 = new Ships(
             this,
@@ -65,6 +62,7 @@ class Play extends Phaser.Scene {
             'ship'
         ).setOrigin(0, 0);
 
+        //New ship type
         this.fastShip = new fShip(
             this,
             Phaser.Math.Between(100,300),
@@ -78,6 +76,7 @@ class Play extends Phaser.Scene {
         keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
         keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
         keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
+
         //Player 2 Key Setup
         p2FIRE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
@@ -85,6 +84,7 @@ class Play extends Phaser.Scene {
 
         //green bar
         this.add.rectangle(0, borderUISize + borderPadding, game.config.width, borderUISize * 2, 0x00FF00).setOrigin(0, 0);
+
         //white borders
         this.add.rectangle(0, 0, game.config.width, borderUISize, 0xFFFFFF).setOrigin(0, 0);
         this.add.rectangle(0, game.config.height - borderUISize, game.config.width, borderUISize, 0xFFFFFF).setOrigin(0, 0);
@@ -134,10 +134,10 @@ class Play extends Phaser.Scene {
             gravityY: 0
         })
 
-        //Implementing Timer
+        //--------Implementing Timer------------
+        this.timeCount = (game.settings.gameTimer/1000);//putting timer in seconds
 
-        this.timeCount = (game.settings.gameTimer/1000); 
-
+        //Timer graphic
         let timerConfig = {
             fontFamily: 'Courier',
             fontSize: '28px',
@@ -151,8 +151,8 @@ class Play extends Phaser.Scene {
             fixedWidth: 100
 
         }
-
         this.timerRight = this.add.text(game.config.width-borderUISize-borderPadding-100, borderUISize + borderPadding * 2, this.timeCount, timerConfig);
+        //Counts timer down every second
         this.countdown = this.time.addEvent({
             delay: 1000,
             callback: () => {
@@ -174,6 +174,7 @@ class Play extends Phaser.Scene {
     }
 
     update() {
+        //Changed key to R to (R)estart
         if (this.gameOver && Phaser.Input.Keyboard.JustDown(keyR)) {
             this.scene.restart();
         }
@@ -218,25 +219,38 @@ class Play extends Phaser.Scene {
     }
 
     shipExplode(ship) {
-        //TIMER ADD HERE
+        //Time is increased
         this.timeCount += 5;
 
         ship.alpha = 0;
         this.sound.play('sfx_explosion');
+        //Resets emitters position and turns it on.
         this.emitter.setPosition(ship.x, ship.y);
         this.emitter.active = true;
-        this.emitter.explode();
+        
         let boom = this.add.sprite(ship.x, ship.y, 'explosion').setOrigin(0, 0);
         boom.anims.play('explode');//plays animation
         boom.on('animationcomplete', () => {
             
             ship.alpha = 1;//make ship visible
             boom.destroy();//removes sprite
-            this.emitter.active = false;
+            
         })
         ship.reset()
         this.p1Score += ship.points;
         this.scoreLeft.text = this.p1Score;
+        this.emitter.explode();
+        this.time.delayedCall(
+            3000, 
+            this.turnOffEmitter,
+            undefined, 
+            this); 
+        
+    }
+
+    turnOffEmitter(){
+        
+        this.emitter.active = false;
     }
 
     setMultiplayerBorders(rocket1, rocket2){

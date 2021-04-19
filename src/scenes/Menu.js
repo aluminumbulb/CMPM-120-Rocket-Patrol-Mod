@@ -37,6 +37,7 @@ class Menu extends Phaser.Scene{
         menuConfig.backgroundColor = '#3F9EFC';
         menuConfig.color = '#000';
         
+        //Second player select prompts
         this.add.text(game.config.width/2, game.config.height/2+100 + borderUISize +
         borderPadding, '↓    ', menuConfig).setOrigin(.5);
 
@@ -83,10 +84,11 @@ class Menu extends Phaser.Scene{
             this.scene.start('playScene');    
           }
           if(Phaser.Input.Keyboard.JustDown(this.keyDown)){
+            //adds or removes second player
             this.togglePlayers();
           }
     }
-
+    //This activates and deactivates the menu prompts for the second player
     togglePlayers(){
       this.players = !this.players;
       if(this.players){
