@@ -36,6 +36,7 @@ class Ships extends Phaser.GameObjects.Sprite{
         }else{
             if(this.rtl){
                 this.scaleX = -1
+                
             }
             this.rtl = false;
             this.speed = game.settings.spaceshipSpeed;

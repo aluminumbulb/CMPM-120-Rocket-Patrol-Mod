@@ -10,6 +10,8 @@ class Play extends Phaser.Scene {
         this.load.image('ship', 'assets/spaceship.png');
         this.load.spritesheet('explosion', 'assets/explosion.png', { frameWidth: 64, frameHeight: 32, startFrame: 0, endFrame: 9 });
         this.load.image('bonus', 'assets/bonus_time_sized.png');
+        this.load.image('fship', 'assets/quick_ship.png');
+
     }
 
     create() {
@@ -48,12 +50,12 @@ class Play extends Phaser.Scene {
 
         //Only make the second if the player requested two players
         
-            this.ship2 = new Ships(
-                this,
-                300,
-                240,
-                'ship'
-            ).setOrigin(0, 0);
+        this.ship2 = new Ships(
+            this,
+             300,
+            240,
+             'ship'
+        ).setOrigin(0, 0);
  
 
         this.ship3 = new Ships(
@@ -62,6 +64,14 @@ class Play extends Phaser.Scene {
             300,
             'ship'
         ).setOrigin(0, 0);
+
+        this.fastShip = new fShip(
+            this,
+            Phaser.Math.Between(100,300),
+            50,
+            'fship'
+        ).setOrigin(0,0);
+
 
         //Player 1 Key Setup
         p1FIRE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
@@ -146,7 +156,6 @@ class Play extends Phaser.Scene {
         this.countdown = this.time.addEvent({
             delay: 1000,
             callback: () => {
-                
                 if(this.timeCount > 0){
                     this.timeCount--;
                     this.timerRight.text = this.timeCount;
@@ -162,7 +171,6 @@ class Play extends Phaser.Scene {
                 game.settings.spaceshipSpeed *=2;
             },
         })
-        
     }
 
     update() {
@@ -173,7 +181,6 @@ class Play extends Phaser.Scene {
             this.scene.start("menuScene");
         }
 
-
         if (!this.gameOver) {
             this.p1Rocket.update();
             if(game.settings.players){
@@ -183,12 +190,21 @@ class Play extends Phaser.Scene {
             this.ship1.update();
             this.ship2.update();
             this.ship3.update();
+            this.fastShip.update();
             this.starfield.tilePositionX -= 4;
         }
 
         this.checkCollision(this.p1Rocket, this.ship1);
         this.checkCollision(this.p1Rocket, this.ship2);
         this.checkCollision(this.p1Rocket, this.ship3);
+        this.checkCollision(this.p1Rocket, this.fastShip);
+
+        if(game.settings.players){
+            this.checkCollision(this.p2Rocket, this.ship1);
+            this.checkCollision(this.p2Rocket, this.ship2);
+            this.checkCollision(this.p2Rocket, this.ship3);
+            this.checkCollision(this.p2Rocket, this.fastShip);
+        }
     }
 
     checkCollision(rocket, ship) {
@@ -213,11 +229,12 @@ class Play extends Phaser.Scene {
         let boom = this.add.sprite(ship.x, ship.y, 'explosion').setOrigin(0, 0);
         boom.anims.play('explode');//plays animation
         boom.on('animationcomplete', () => {
-            ship.reset()
+            
             ship.alpha = 1;//make ship visible
             boom.destroy();//removes sprite
             this.emitter.active = false;
         })
+        ship.reset()
         this.p1Score += ship.points;
         this.scoreLeft.text = this.p1Score;
     }
