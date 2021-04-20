@@ -29,7 +29,7 @@ class Play extends Phaser.Scene {
             'rocket',
             0,
             true,
-        ).setOrigin(0.5, 0);
+        ).setOrigin(0, 0);
 
         //If 2 players was selected, a new rocket object is created
         if(game.settings.players){
@@ -47,21 +47,27 @@ class Play extends Phaser.Scene {
             this,
             100,
             200,
-            'ship'
+            'ship',
+            0,
+            30
         ).setOrigin(0, 0);
 
         this.ship2 = new Ships(
             this,
              300,
             240,
-             'ship'
+             'ship',
+            0,
+            30
         ).setOrigin(0, 0);
 
         this.ship3 = new Ships(
             this,
             380,
             300,
-            'ship'
+            'ship',
+            0,
+            30
         ).setOrigin(0, 0);
 
         //New ship type
@@ -214,12 +220,12 @@ class Play extends Phaser.Scene {
     }
 
     checkCollision(rocket, ship) {
-        if (rocket.x + rocket.width > ship.x &&
-            rocket.x < ship.x + ship.width &&
-            rocket.y + rocket.height > ship.y &&
-            rocket.y < ship.y + ship.height) {
-            rocket.reset();
-            this.shipExplode(ship);
+        if (rocket.x < ship.x + ship.width && 
+            rocket.x + rocket.width > ship.x && 
+            rocket.y < ship.y + ship.height &&
+            rocket.height + rocket.y > ship. y) {
+                rocket.reset();
+                this.shipExplode(ship);
         }
     }
 

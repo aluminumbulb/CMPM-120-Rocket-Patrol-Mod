@@ -10,7 +10,7 @@ class fShip extends Phaser.GameObjects.Sprite{
 
     update(){
         //selects a random time to drop the ship (might acutally never drop)
-        if(Phaser.Math.Between(0,0)==0){
+        if(Phaser.Math.Between(0,1000)==0){
             this.dropping = true;
         }
 
@@ -19,9 +19,7 @@ class fShip extends Phaser.GameObjects.Sprite{
             this.y += this.speed;
             this.x = this.initialX+Math.sin(this.y/10)*30;
             if(this.y>game.config.height+50){
-                this.destroy();
-
-                //this.reset();
+                this.reset();
             }
         }
 
